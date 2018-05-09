@@ -53,6 +53,7 @@ def getEventProbs(selected, remaining, relImportances):
 if __name__ == "__main__":
 	selected, remaining = getAllEvents('match.xml', ['goal'])
 
+	# TODO: Store all event types somewhere (list?) instead of hardcoding
 	# TODO: Try changing relImportances
 	relImportances = {'Foul': 0.25, 'off_target': 0.33, 'yellow': 0.5, 'save': 1}
 	eventProbs = getEventProbs(selected, remaining, relImportances)
