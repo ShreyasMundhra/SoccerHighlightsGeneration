@@ -10,7 +10,11 @@ def getFouls(filters):
 	return filters.findall("./fouls//event[@type='Foul']")
 
 def getYellowCards(filters):
-	return filters.findall("./cards//event[card='yellow']")
+	yellows = filters.findall("./cards//event[card='yellow']")
+	for yellow in yellows:
+		# print(type(yellow))
+		yellow.set('type', 'yellow')
+	return yellows
 
 def getSaves(filters):
 	return filters.findall("./goal_keeping//event[@type='save']")
@@ -18,26 +22,26 @@ def getSaves(filters):
 def getShotsOffTarget(filters):
 	return filters.findall("./goals_attempts//event[@type='off_target']")
 
-if __name__ == "__main__":
+def getAllEventElements(filename):
 	tree = ET.parse('match.xml')
 	root = tree.getroot()
 	filters = getFilters(root)
-	# goals = getGoals(filters)
-	# for goal in goals:
-	# 	print(goal.attrib)
 
-	# fouls = getFouls(filters)
-	# for foul in fouls:
-	# 	print(foul.attrib)
-
-	# yellows = getYellowCards(filters)
-	# for yellow in yellows:
-	# 	print(yellow.attrib)
-
-	# saves = getSaves(filters)
-	# for save in saves:
-	# 	print(save.attrib)
-
+	goals = getGoals(filters)
+	fouls = getFouls(filters)
+	yellows = getYellowCards(filters)
+	saves = getSaves(filters)
 	offshots = getShotsOffTarget(filters)
-	for offshot in offshots:
-		print(offshot.attrib)
+
+	eventElements = []
+	eventElements.extend(goals)
+	eventElements.extend(fouls)
+	eventElements.extend(yellows)
+	eventElements.extend(saves)
+	eventElements.extend(offshots)
+	return eventElements
+
+if __name__ == "__main__":
+	eventElements = getAllEventElements('match.xml')
+	for element in eventElements:
+		print(element.attrib)
