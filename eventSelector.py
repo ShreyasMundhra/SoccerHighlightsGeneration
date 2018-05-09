@@ -1,11 +1,12 @@
 import dataProcessor as dp
+import random
 
 class Event():
 	def __init__(self, type, secs):
 		self.type = type
 		self.secs = secs
 
-def getAllEvents(filename, mandatory):
+def getAllEvents(filename, mandatory=tuple(['goal'])):
 	eventElements = dp.getAllEventElements(filename)
 
 	selected = []
@@ -37,8 +38,8 @@ def getEventCounts(events):
 	return counts
 
 
-def getEventProbs(selected, remaining, relImportances):
-	numRemaining = findRemainingNumberOfSelectedEvents(selected)
+def getEventProbs(selected, remaining, relImportances, eventSecs=10, highlightSecs=180):
+	numRemaining = findRemainingNumberOfSelectedEvents(selected, eventSecs, highlightSecs)
 	eventCounts = getEventCounts(remaining)
 
 	denominator = 0
@@ -49,6 +50,14 @@ def getEventProbs(selected, remaining, relImportances):
 	for event in relImportances:
 		probs[event] = relImportances[event]*numRemaining/float(denominator)
 	return probs
+
+def selectEvents(remaining, eventProbs):
+	selected = []
+	for event in remaining:
+		if random.random() <= eventProbs[event.type]:
+			selected.append(event)
+
+	return selected
 
 if __name__ == "__main__":
 	selected, remaining = getAllEvents('match.xml', ['goal'])
@@ -61,3 +70,11 @@ if __name__ == "__main__":
 	# TODO: Select events to be shown in highlights based on eventProbs
 	# TODO: Substitutions near beginning or end of game should be selected
 	# TODO: No two consecutive events should be of the same type
+
+	print(eventProbs)
+
+	selected.extend(selectEvents(remaining, eventProbs))
+	for event in sorted(selected, key=lambda x: x.secs):
+		print(event.type, event.secs)
+
+	# TODO: Run multiple times and write about results in the report
