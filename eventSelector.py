@@ -13,14 +13,12 @@ def getAllEvents(filename, mandatory=tuple(['goal'])):
 	remaining = []
 	for element in eventElements:
 		attrib = element.attrib
-		# TODO: use (mins and secs) or minsec?
 		event = Event(attrib['type'], int(attrib['minsec']))
 		if attrib["type"] in mandatory:
 			selected.append(event)
 		else:
 			remaining.append(event)
 
-	# events = sorted(events, key=lambda x: x.secs)
 	return selected, remaining
 
 def findRemainingNumberOfSelectedEvents(selected, eventSecs=10, highlightSecs=180):
@@ -62,19 +60,9 @@ def selectEvents(remaining, eventProbs):
 if __name__ == "__main__":
 	selected, remaining = getAllEvents('match.xml', ['goal'])
 
-	# TODO: Store all event types somewhere (list?) instead of hardcoding
-	# TODO: Try changing relImportances
 	relImportances = {'Foul': 0.25, 'off_target': 0.33, 'yellow': 0.5, 'save': 1}
 	eventProbs = getEventProbs(selected, remaining, relImportances)
-
-	# TODO: Select events to be shown in highlights based on eventProbs
-	# TODO: Substitutions near beginning or end of game should be selected
-	# TODO: No two consecutive events should be of the same type
-
-	print(eventProbs)
 
 	selected.extend(selectEvents(remaining, eventProbs))
 	for event in sorted(selected, key=lambda x: x.secs):
 		print(event.type, event.secs)
-
-	# TODO: Run multiple times and write about results in the report

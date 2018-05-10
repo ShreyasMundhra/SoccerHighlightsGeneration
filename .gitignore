@@ -1,6 +1,7 @@
 # Own stuff
 data/
 *.mp4
+concat.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
